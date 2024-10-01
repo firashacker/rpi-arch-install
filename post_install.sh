@@ -32,6 +32,7 @@ setChroot(){
   echo -e "\e[32mSetting Up Chroot ! \e[0m"
   cp /usr/bin/qemu-arm-static root/usr/bin
   echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' > /proc/sys/fs/binfmt_misc/register
+  mount -B boot root/boot
   #mount -t proc /proc root/proc
   #mount -o bind /dev root/dev
   #mount -o bind /dev/pts root/dev/pts
@@ -40,6 +41,7 @@ setChroot(){
 
 cleanMess(){
   echo -e "\e[32mCleaning Up ! \e[0m"
+  umount root/boot
   #umount  root/proc
   #umount  root/dev
   #umount  root/dev/pts
