@@ -96,13 +96,13 @@ setWifi(){
   echo "Description=On-board wireless NIC"  >> root/etc/systemd/network/wlan0.network
   echo "DHCP=yes"  >> root/etc/systemd/network/wlan0.network
 
-  echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=wheel" > /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-  echo "network={" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-  echo "     ssid=\"${SSID}\"" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-  echo "     scan_ssid=1" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-  echo "     key_mgmt=WPA-PSK" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-  echo "     psk=\"${WIFIPASS}\"" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-  echo "}" >> /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+  echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=wheel" > root/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+  echo "network={" >> root/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+  echo "     ssid=\"${SSID}\"" >> root/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+  echo "     scan_ssid=1" >> root/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+  echo "     key_mgmt=WPA-PSK" >> root/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+  echo "     psk=\"${WIFIPASS}\"" >> root/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+  echo "}" >> root/etc/wpa_supplicant/wpa_supplicant-wlan0.conf
 
   #chroot root systemctl enable wpa_supplicant@wlan0.service
   arch-chroot root systemctl enable wpa_supplicant@wlan0.service
@@ -112,7 +112,7 @@ setWifi(){
 
 setBootOptions(){
   echo -e "\e[32mAppending Boot Options ! \e[0m"
-  sed -i "s/initramfs /disable_overscan=1\ninitramfs /g" boot/config.txt
+  sed -i "s/dtoverlay=vc4-kms-v3d\ninitramfs /disable_overscan=1\ninitramfs /g" boot/config.txt
 }
 
 setXserver(){
@@ -125,9 +125,9 @@ setXserver(){
   echo "allowed_users=anybody" > root/etc/X11/Xwrapper.config
   echo "needs_root_rights=yes" >> root/etc/X11/Xwrapper.config
 
-  echo "xset s off" > /etc/X11/xinit/xinitrc
-  echo "xset -dpms" >> /etc/X11/xinit/xinitrc
-  echo "xset s noblank" >> /etc/X11/xinit/xinitrc
+  echo "xset s off" > root/etc/X11/xinit/xinitrc
+  echo "xset -dpms" >> root/etc/X11/xinit/xinitrc
+  echo "xset s noblank" >> root/etc/X11/xinit/xinitrc
 #  cp root/etc/X11/xinit/xinitrc root/home/${User}/.xinitrc
   cp root/etc/X11/xinit/xinitrc root/home/alarm/.xinitrc
   cp root/etc/X11/xinit/xinitrc root/etc/skel/.xinitrc
