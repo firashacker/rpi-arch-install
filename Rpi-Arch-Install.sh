@@ -1,14 +1,21 @@
 #!/bin/bash
 cd "$( dirname "${BASH_SOURCE[0]}")"
-cd "$( dirname "${BASH_SOURCE[0]}")"
+declare BASEDIR="$(pwd)"
+if [[ "$(whoami)" != "root" ]];then
+  echo "Please run as root"
+  exit
+fi
+  
 mkdir -p tmp
+cp ./post_install.sh ./tmp
 cd tmp
 declare curdir="$(pwd)"
 echo $curdir 
 
-if [[ -f ../Arch*.tar.gz ]];then
-  cp ../Arch*.tar.gz ./ 
-fi
+
+
+umount boot
+umount root
 
 download(){
 echo -e "\e[32mDownloading System Image !\e[0m"
@@ -84,9 +91,13 @@ mount /dev/${PART}2 root
 
 extract(){
 echo -e "\e[32mextracting archlinux !\e[0m"
-bsdtar -xpf ArchLinuxARM-rpi-armv7-latest.tar.gz -C root
+tar -xpf ArchLinuxARM-rpi-armv7-latest.tar.gz -C root > extraction.log
 sync
 mv root/boot/* boot
+}
+
+postInstall(){
+  ${BASEDIR}/post_install.sh
 }
 
 clean(){
@@ -95,10 +106,11 @@ sync
 umount boot root
 }
 
-download
+#download
 getInput
-partition
-format
+#partition
+#format
 mountfs
-extract
+#extract
+postInstall
 clean
