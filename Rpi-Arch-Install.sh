@@ -106,11 +106,11 @@ sync
 umount boot root
 }
 
-#download
+download
 getInput
-#partition
-#format
+partition
+format
 mountfs
-#extract
+extract
 postInstall
 clean
