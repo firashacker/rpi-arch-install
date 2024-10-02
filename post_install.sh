@@ -14,14 +14,14 @@ fi
 
 if [[ ! -f /usr/bin/qemu-arm-static ]];then
   if [[ ! -f "$(which pacman)" ]];then
-    echo -e "\e[31mErr: please install qemu-user-static then try runing\e[0m 'sudo ./post_install.sh'"
+    echo -e "\e[31mErr: please install qemu-user-static then try runing\e[32m [sudo ./post_install.sh] \e[0m"
     exit
   fi
   pacman -S qemu-user-static
 fi
 if [[ ! -f $(which arch-chroot) ]];then
   if [[ ! -f "$(which pacman)" ]];then
-    echo -e "\e[31mErr: couldn't install arch-install-scripts\e[0m"
+    echo -e "\e[31mErr: couldn't install arch-install-scripts, please install arch-chroot for your distro then try running \e[32m[sudo ./post_install.sh]]\e[0m"
     exit
   fi
   pacman -S arch-install-scripts
@@ -83,6 +83,13 @@ setUpdate(){
   arch-chroot root pacman -Syu
 }
 
+setNetworkManager(){
+  echo -e "\e[32mInstalling networkmanager ! \e[0m"
+  arch-chroot root pacman -S networkmanager
+  echo "use nmtui to setup your network" > root/etc/skel/ReadMeToSetYourConnection
+
+}
+
 setWifi(){
   echo -e "\e[32mSetting Up Network ! \e[0m"
   echo "Please Enter Wifi Network Name:"
@@ -141,12 +148,32 @@ setXFCE(){
   arch-chroot root sddm --example-config > root/etc/sddm.conf
 }
 
+setZSH(){
+  echo -e "\e[32mSetting Up zsh Shell! \e[0m"
+  arch-chroot root pacman -S zsh zsh-autosuggestions zsh-completions zsh-syntax-highlighting
+  cp ../zshrc root/etc/skel/.zshrc
+}
+
+
+
+setTMUX(){
+  echo -e "\e[32mDownloading Tmux Config ! \e[0m"
+  arch-chroot root pacman -S tmux
+  arch-chroot root pacman -S git
+  arch-chroot root git clone https://github.com/tmux-plugins/tpm /etc/skel/.tmux/plugins/tpm
+  arch-chroot root git clone https://github.com/firashacker/tmux-config.git /etc/skel/.config/tmux
+}
+
+
+
 setUser(){
+  setZSH
+  setTMUX
   echo -e "\e[32mSetting Up User ! \e[0m"
   echo "please enter user name:"
   read User
-  #chroot root useradd -m -G wheel  ${User} --home /home/${User}
-  arch-chroot root useradd -m -G wheel  ${User} --home /home/${User}
+  #chroot root useradd -m -G wheel -s /bin/zsh ${User} --home /home/${User}
+  arch-chroot root useradd -m -G wheel  -s /bin/zsh  ${User} --home /home/${User}
   #chroot root pacman -Sy sudo
   arch-chroot root pacman -Sy sudo
   #chroot root passwd ${User}
@@ -157,23 +184,55 @@ setUser(){
   echo "User=${User}" >> root/etc/sddm.conf
 }
 
+
+
+#################################
+## setting chroot environment ###
+#################################
 #Always First
 setChroot
 
+###############################
+## setting console language ###
+###############################
 setConsole
 
+####################################
+## setting locales and time zone ###
+####################################
 setLocales
 
+##############################
+## updating the filesystem ###
+##############################
 setUpdate
+## use setKeyring instead if you dont wan't to update now
+#setKeyring
 
-setWifi
+####################
+## Network Setup ###
+####################
+setNetworkManager
+#setWifi
 
-setXserver
+#############################################################
+## Couldn't get this to work ,display manager can't start ###
+#############################################################
+#setXserver
+#setXFCE
 
-setXFCE
-
+#############################
+## setup the user account ###
+#############################
 setUser
 
+###############################
+## configuring boot options ###
+###############################
 setBootOptions
 
+###############
+## Cleaning ###
+###############
 cleanMess
+
