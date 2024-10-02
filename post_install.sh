@@ -1,5 +1,18 @@
 #!/bin/bash
+#############################
+## put your timezone Here ###
+#############################
+
 TIMEZONE="Asia/Jerusalem"
+
+
+# WARNING
+# this script is designed to run under arch linux
+# you may have to tweak somethings 
+# OR install some PACKAGES MANUALLY for it to run on other
+# distroes
+
+
 cd "$( dirname "${BASH_SOURCE[0]}")"
 cd "$( dirname "${BASH_SOURCE[0]}")"
 cd tmp
@@ -183,6 +196,8 @@ setUser(){
   echo "[Autologin]" >> root/etc/sddm.conf
   echo "User=${User}" >> root/etc/sddm.conf
 }
+
+
 
 
 
