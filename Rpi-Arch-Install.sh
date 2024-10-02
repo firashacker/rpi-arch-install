@@ -1,6 +1,7 @@
 #!/bin/bash
 cd "$( dirname "${BASH_SOURCE[0]}")"
 declare BASEDIR="$(pwd)"
+
 if [[ "$(whoami)" != "root" ]];then
   echo "Please run as root"
   exit
@@ -32,7 +33,13 @@ if [[ ! -e /dev/${PART} ]];then
   exit -2
 fi
 echo "are you sure your disk is /dev/${PART} [y/N]?"
-read x 
+read x
+while [[ $x != 'y' ]] && [[ $x != 'Y' ]] && [[ $x != "n" ]] && [[ $x != "N" ]];do
+echo -e "\e[31mErr: Invalid Input ! \e[0m"
+echo "Try Again :"
+read x
+done
+
 if [ $x != "y" ] && [ $x != "Y" ];then
   echo -e  "\e[31mErr: quit by User !\e[0m"
   exit -1
@@ -42,7 +49,15 @@ fi
 
 partition() {
 echo "partition the filesystem [y/N]?"
+
 read xx
+while [[ $xx != 'y' ]] && [[ $xx != 'Y' ]] && [[ $xx != "n" ]] && [[ $xx != "N" ]];do 
+echo -e "\e[31mErr: Invalid Input ! \e[0m"
+echo "Try Again :"
+read xx
+done
+
+
 if [ $xx != "y" ] && [ $xx != "Y" ];then
   echo -e  "\e[31mWarning: didn't partition the disk !\e[0m"
   return 0
@@ -71,6 +86,12 @@ EOF
 format(){
 echo "format the filesystem [y/N]?"
 read xxx
+while [[ $xxx != 'y' ]] && [[ $xxx != 'Y' ]] && [[ $xxx != "n" ]] && [[ $xxx != "N" ]];do 
+echo -e "\e[31mErr: Invalid Input ! \e[0m"
+echo "Try Again :"
+read xxx
+done
+
 if [ $xxx != "y" ] && [ $xxx != "Y" ];then
   echo -e  "\e[31mWarning: didn't format the disk !\e[0m"
   return 0
